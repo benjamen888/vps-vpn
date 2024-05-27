@@ -6,9 +6,9 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-
 hyPasswd=$(cat /proc/sys/kernel/random/uuid)
 read -p "回车或者默认采用随机端口，或者自定义端口请输入(1-65535)："  getPort
+
 # Function to check if a port is available
 check_port() {
   local port=$1
@@ -20,19 +20,17 @@ check_port() {
 }
 
 # Generate a random port and check its availability
-if [ -z $getPort ];then
-	while true; do
-	  getPort=$(shuf -i 10000-20000 -n 1)
-	  if check_port $port; then
-		echo "Available port: $port"
-		break
-	  else
-		echo "Port $port is in use, trying another..."
-	  fi
-	done
+if [ -z $getPort ]; then
+    while true; do
+        getPort=$(shuf -i 10000-20000 -n 1)
+        if check_port $getPort; then
+            echo "Available port: $getPort"
+            break
+        else
+            echo "Port $getPort is in use, trying another..."
+        fi
+    done
 fi
-
-
 
 getIP(){
     local serverIP=
@@ -46,11 +44,11 @@ getIP(){
 install_hy2(){
     if [ -f "/usr/bin/apt-get" ]; then
         apt-get update -y && apt-get upgrade -y
-        apt-get install -y gawk curl
+        apt-get install -y gawk curl openssl
     else
         yum update -y && yum upgrade -y
         yum install -y epel-release
-        yum install -y gawk curl
+        yum install -y gawk curl openssl
     fi
     bash <(curl -fsSL https://get.hy2.sh/)
     mkdir -p /etc/hysteria/
@@ -81,18 +79,47 @@ EOF
 systemctl enable hysteria-server.service && systemctl restart hysteria-server.service && systemctl status --no-pager hysteria-server.service
 rm -f main.sh hy2.sh
 
-cat >/etc/hysteria/hyclient.json<<EOF
+pinSHA256=$(openssl x509 -noout -fingerprint -sha256 -in /etc/hysteria/server.crt | sed 's/://g' | awk -F= '{print $2}')
+
+cat >/etc/hysteria/hyclient.json <<EOF
 {
-===========配置参数=============
-代理模式：Hysteria2
-地址：$(getIP)
-端口：${getPort}
-密码：${hyPasswd}
-SNI：bing.com
-传输协议：tls
-跳过证书验证：ture
-====================================
-hysteria2://$(echo -n "${hyPasswd}@$(getIP):${getPort}/?insecure=1&sni=bing.com#hy2-${getPort}")
+  "代理模式": "Hysteria2",
+  "地址": "$(getIP)",
+  "端口": "${getPort}",
+  "密码": "${hyPasswd}",
+  "SNI": "bing.com",
+  "传输协议": "tls",
+  "跳过证书验证": true,
+  "URL": "hysteria2://${hyPasswd}@$(getIP):${getPort}/?insecure=1&sni=bing.com#hy2-${getPort}",
+  "Clash配置": {
+    "name": "hy2-${getPort}",
+    "type": "hysteria2",
+    "server": "$(getIP)",
+    "port": "${getPort}",
+    "transport": {
+      "udp": {
+        "hopInterval": "30s"
+      }
+    },
+    "quic": {
+      "initStreamReceiveWindow": 262144,
+      "maxStreamReceiveWindow": 262144,
+      "initConnReceiveWindow": 655360,
+      "maxConnReceiveWindow": 655360
+    },
+    "password": "${hyPasswd}",
+    "alpn": [
+      "h3"
+    ],
+    "skip-cert-verify": false,
+    "fast-open": false,
+    "tls": {
+      "sni": "bing.com",
+      "insecure": false,
+      "pinSHA256": "${pinSHA256}",
+      "ca": "/etc/hysteria/server.crt"
+    }
+  }
 }
 EOF
 
@@ -117,8 +144,32 @@ client_hy2(){
     echo "========================================="
     echo "hysteria2://${hylink}"
     echo
+    echo "Clash 配置:"
+    echo "{
+  - name: \"hy2-${getPort}\"
+    type: hysteria2
+    server: $(getIP)
+    port: ${getPort}
+    transport:
+      udp:
+        hopInterval: 30s
+    quic:
+      initStreamReceiveWindow: 262144
+      maxStreamReceiveWindow: 262144
+      initConnReceiveWindow: 655360
+      maxConnReceiveWindow: 655360
+    password: ${hyPasswd}
+    alpn:
+      - h3
+    skip-cert-verify: false
+    fast-open: false
+    tls:
+      sni: bing.com
+      insecure: false
+      pinSHA256: ${pinSHA256}
+      ca: /etc/hysteria/server.crt
+}"
 }
 
 install_hy2
 client_hy2
-
