@@ -15,6 +15,16 @@ unInstallHysteria2(){
     rm -rf /etc/hysteria
 }
 
+installReality(){
+	wget https://raw.githubusercontent.com/benjamen888/vps-vpn/main/proxytype/reality.sh && bash reality.sh 
+}
+unInstallReality()
+{
+	systemctl stop xray
+	bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ remove
+}
+
+
 runmenu(){
     clear
     echo " ================================================== "
@@ -35,6 +45,9 @@ runmenu(){
     2)
     installHysteria2
     ;;
+    11)
+    unInstallReality
+    ;;	
     12)
     unInstallHysteria2
     ;;

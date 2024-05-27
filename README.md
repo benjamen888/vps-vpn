@@ -1,4 +1,4 @@
-# VPS-VPN
+
 
 ## 说明
 
@@ -18,10 +18,4 @@
 
 - 确保您的VPS有足够的权限来运行此脚本。
 - 建议在安装前备份您的系统，以防万一。
-
-## 下载链接
-
-您可以通过以下命令直接下载并运行脚本：
-
-```sh
-wget https://raw.githubusercontent.com/benjamen888/vps-vpn/main/main.sh && bash main.sh
+- 使用后，如果链接不上，请检查下防火墙。是否打开对应的端口
