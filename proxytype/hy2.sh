@@ -8,7 +8,7 @@ fi
 
 
 hyPasswd=$(cat /proc/sys/kernel/random/uuid)
-getPort=12345
+read -p "回车或者默认采用随机端口，或者自定义端口请输入(1-65535)："  getPort
 # Function to check if a port is available
 check_port() {
   local port=$1
@@ -20,15 +20,17 @@ check_port() {
 }
 
 # Generate a random port and check its availability
-while true; do
-  getPort=$(shuf -i 10000-20000 -n 1)
-  if check_port $port; then
-    echo "Available port: $port"
-    break
-  else
-    echo "Port $port is in use, trying another..."
-  fi
-done
+if [ -z $getPort ];then
+	while true; do
+	  getPort=$(shuf -i 10000-20000 -n 1)
+	  if check_port $port; then
+		echo "Available port: $port"
+		break
+	  else
+		echo "Port $port is in use, trying another..."
+	  fi
+	done
+fi
 
 
 
