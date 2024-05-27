@@ -6,14 +6,15 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-installHysteria2(){
-    wget https://raw.githubusercontent.com/benjamen888/vps-vpn/proxytype/hy2.sh && bash hy2.sh	
+InstallHysteria2(){
+    wget https://raw.githubusercontent.com/benjamen888/vps-vpn/proxytype/hy2.sh && bash hy2.sh    
 }
 
 unInstallHysteria2(){
     bash <(curl -fsSL https://get.hy2.sh/) --remove
-	rm -rf /etc/hysteria
+    rm -rf /etc/hysteria
 }
+
 runmenu(){
     clear
     echo " ================================================== "
@@ -22,20 +23,21 @@ runmenu(){
     echo " ================================================== "
     echo " 1. 安装 Reality"
     echo " 2. 安装 Hysteria2"
-	echo " ------------------------------------"
-	echo " 12.卸载Hysteria2"
+    echo " ------------------------------------"
+    echo " 12.卸载Hysteria2"
     echo " 0. 退出脚本"
     echo
     read -p "请输入数字:" num
     case "$num" in
     1)
     InstallReality
+    ;;
     2)
     InstallHysteria2
     ;;
     12)
     unInstallHysteria2
-    ;;	
+    ;;
     0)
     exit 1
     ;;
