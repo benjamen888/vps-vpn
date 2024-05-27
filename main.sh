@@ -34,8 +34,9 @@ runmenu(){
     echo " 1. 安装 Reality"
     echo " 2. 安装 Hysteria2"
     echo " ------------------------------------"
-    echo " 12.卸载Hysteria2"
-    echo " 0. 退出脚本"
+    echo " 11. 卸载 Reality"
+    echo " 12. 卸载 Hysteria2"
+    echo " 0.  退出脚本"
     echo
     read -p "请输入数字:" num
     case "$num" in
