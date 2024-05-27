@@ -6,11 +6,10 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-
 v2uuid=$(cat /proc/sys/kernel/random/uuid)
 
-read -t 30 -p "回车或等待15秒为默认端口443，或者自定义端口请输入(1-65535)："  getPort
-if [ -z $getPort ];then
+read -t 30 -p "回车或等待15秒为默认端口443，或者自定义端口请输入(1-65535)：" getPort
+if [ -z $getPort ]; then
     getPort=443
 fi
 
@@ -23,7 +22,7 @@ getIP(){
     echo "${serverIP}"
 }
 
-install_xray(){ 
+install_xray(){
     if [ -f "/usr/bin/apt-get" ]; then
         apt-get update -y && apt-get upgrade -y
         apt-get install -y gawk curl
@@ -89,7 +88,7 @@ cat >/usr/local/etc/xray/config.json<<EOF
             "protocol": "blackhole",
             "tag": "blocked"
         }
-    ]    
+    ]
 }
 EOF
 
@@ -111,7 +110,29 @@ SNI: www.amazon.com
 shortIds: 88
 ====================================
 vless://${v2uuid}@$(getIP):${getPort}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.amazon.com&fp=chrome&pbk=${rePublicKey}&sid=88&type=tcp&headerType=none#reality-${getPort}
-
+====================================
+Clash 配置:
+{
+  - name: "reality-${getPort}"
+    type: vless
+    server: $(getIP)
+    port: ${getPort}
+    udp: true
+    uuid: "${v2uuid}"
+    flow: xtls-rprx-vision
+    packet-encoding: xudp
+    tls: true
+    servername: "www.amazon.com"
+    alpn:
+      - h2
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    reality-opts:
+      public-key: "${rePublicKey}"
+      short-id: "88"
+    network: tcp
+    smux:
+      enabled: false
 }
 EOF
 
@@ -135,6 +156,30 @@ client_re(){
     echo "shortIds: 88"
     echo "===================================="
     echo "vless://${v2uuid}@$(getIP):${getPort}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.amazon.com&fp=chrome&pbk=${rePublicKey}&sid=88&type=tcp&headerType=none#reality-${getPort}"
+    echo "===================================="
+    echo "Clash 配置:"
+    echo "{
+  - name: \"reality-${getPort}\"
+    type: vless
+    server: $(getIP)
+    port: ${getPort}
+    udp: true
+    uuid: \"${v2uuid}\"
+    flow: xtls-rprx-vision
+    packet-encoding: xudp
+    tls: true
+    servername: \"www.amazon.com\"
+    alpn:
+      - h2
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    reality-opts:
+      public-key: \"${rePublicKey}\"
+      short-id: \"88\"
+    network: tcp
+    smux:
+      enabled: false
+}"
     echo
 }
 
