@@ -1,1 +1,27 @@
-# vps-vpn
+# VPS-VPN
+
+## 说明
+
+此脚本用于在您的VPS上安装和管理VPN协议。只需粘贴并运行以下命令，根据提示选择需要安装或卸载的协议即可。
+
+## 使用方法
+
+1. 在终端粘贴并运行以下命令：
+
+    ```sh
+    wget https://raw.githubusercontent.com/benjamen888/vps-vpn/main/main.sh && bash main.sh
+    ```
+
+2. 按数字选择要安装或卸载的VPN协议。
+
+## 注意事项
+
+- 确保您的VPS有足够的权限来运行此脚本。
+- 建议在安装前备份您的系统，以防万一。
+
+## 下载链接
+
+您可以通过以下命令直接下载并运行脚本：
+
+```sh
+wget https://raw.githubusercontent.com/benjamen888/vps-vpn/main/main.sh && bash main.sh
