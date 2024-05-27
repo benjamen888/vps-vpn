@@ -6,7 +6,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-InstallHysteria2(){
+installHysteria2(){
     wget https://raw.githubusercontent.com/benjamen888/vps-vpn/proxytype/hy2.sh && bash hy2.sh    
 }
 
@@ -30,10 +30,10 @@ runmenu(){
     read -p "请输入数字:" num
     case "$num" in
     1)
-    InstallReality
+    installReality
     ;;
     2)
-    InstallHysteria2
+    installHysteria2
     ;;
     12)
     unInstallHysteria2
