@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 installHysteria2(){
-    wget https://raw.githubusercontent.com/benjamen888/vps-vpn/proxytype/hy2.sh && bash hy2.sh    
+    wget https://raw.githubusercontent.com/benjamen888/vps-vpn/main/proxytype/hy2.sh && bash hy2.sh    
 }
 
 unInstallHysteria2(){
