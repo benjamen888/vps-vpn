@@ -22,6 +22,8 @@ unInstallReality()
 {
 	systemctl stop xray
 	bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ remove
+	rm -rf /usr/local/etc/xray
+	rm -rf /var/log/xray
 }
 
 
