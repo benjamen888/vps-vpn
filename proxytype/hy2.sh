@@ -92,33 +92,24 @@ cat >/etc/hysteria/hyclient.json <<EOF
   "跳过证书验证": true,
   "URL": "hysteria2://${hyPasswd}@$(getIP):${getPort}/?insecure=1&sni=bing.com#hy2-${getPort}",
   "Clash配置": {
-    "name": "hy2-${getPort}",
-    "type": "hysteria2",
-    "server": "$(getIP)",
-    "port": "${getPort}",
-    "transport": {
-      "udp": {
-        "hopInterval": "30s"
-      }
-    },
-    "quic": {
-      "initStreamReceiveWindow": 262144,
-      "maxStreamReceiveWindow": 262144,
-      "initConnReceiveWindow": 655360,
-      "maxConnReceiveWindow": 655360
-    },
-    "password": "${hyPasswd}",
-    "alpn": [
-      "h3"
-    ],
-    "skip-cert-verify": false,
-    "fast-open": false,
-    "tls": {
-      "sni": "bing.com",
-      "insecure": false,
-      "pinSHA256": "${pinSHA256}",
-      "ca": "/etc/hysteria/server.crt"
-    }
+- name: \"hy2-${getPort}\"
+  type: hysteria2
+  server: $(getIP)
+  port: ${getPort}
+  transport:
+    udp:
+      hopInterval: 30s
+  quic:
+    initStreamReceiveWindow: 26843545
+    maxStreamReceiveWindow: 26843545
+    initConnReceiveWindow: 67108864
+    maxConnReceiveWindow: 67108864
+  password: ${hyPasswd}
+  alpn:
+    - h3
+  skip-cert-verify: true
+  fast-open: true
+  sni: bing.com
   }
 }
 EOF
@@ -146,28 +137,25 @@ client_hy2(){
     echo
     echo "Clash 配置:"
     echo "{
-  - name: \"hy2-${getPort}\"
-    type: hysteria2
-    server: $(getIP)
-    port: ${getPort}
-    transport:
-      udp:
-        hopInterval: 30s
-    quic:
-      initStreamReceiveWindow: 262144
-      maxStreamReceiveWindow: 262144
-      initConnReceiveWindow: 655360
-      maxConnReceiveWindow: 655360
-    password: ${hyPasswd}
-    alpn:
-      - h3
-    skip-cert-verify: false
-    fast-open: false
-    tls:
-      sni: bing.com
-      insecure: false
-      pinSHA256: ${pinSHA256}
-      ca: /etc/hysteria/server.crt
+- name: \"hy2-${getPort}\"
+  type: hysteria2
+  server: $(getIP)
+  port: ${getPort}
+  transport:
+    udp:
+      hopInterval: 30s
+  quic:
+    initStreamReceiveWindow: 26843545
+    maxStreamReceiveWindow: 26843545
+    initConnReceiveWindow: 67108864
+    maxConnReceiveWindow: 67108864
+  password: ${hyPasswd}
+  alpn:
+    - h3
+  skip-cert-verify: true
+  fast-open: true
+  sni: bing.com
+
 }"
 }
 

@@ -113,26 +113,26 @@ vless://${v2uuid}@$(getIP):${getPort}?encryption=none&flow=xtls-rprx-vision&secu
 ====================================
 Clash 配置:
 {
-  - name: "reality-${getPort}"
-    type: vless
-    server: $(getIP)
-    port: ${getPort}
-    udp: true
-    uuid: "${v2uuid}"
-    flow: xtls-rprx-vision
-    packet-encoding: xudp
-    tls: true
-    servername: "www.amazon.com"
-    alpn:
-      - h2
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    reality-opts:
-      public-key: "${rePublicKey}"
-      short-id: "88"
-    network: tcp
-    smux:
-      enabled: false
+- name: "reality-${getPort}"
+  type: vless
+  server: $(getIP)
+  port: ${getPort}
+  udp: true
+  uuid: "${v2uuid}"
+  flow: xtls-rprx-vision
+  packet-encoding: xudp
+  tls: true
+  servername: "www.amazon.com"
+  alpn:
+    - h2
+  client-fingerprint: chrome
+  skip-cert-verify: true
+  reality-opts:
+    public-key: "${rePublicKey}"
+    short-id: "88"
+  network: tcp
+  smux:
+    enabled: false
 }
 EOF
 
@@ -159,26 +159,26 @@ client_re(){
     echo "===================================="
     echo "Clash 配置:"
     echo "{
-  - name: \"reality-${getPort}\"
-    type: vless
-    server: $(getIP)
-    port: ${getPort}
-    udp: true
-    uuid: \"${v2uuid}\"
-    flow: xtls-rprx-vision
-    packet-encoding: xudp
-    tls: true
-    servername: \"www.amazon.com\"
-    alpn:
-      - h2
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    reality-opts:
-      public-key: \"${rePublicKey}\"
-      short-id: \"88\"
-    network: tcp
-    smux:
-      enabled: false
+- name: \"reality-${getPort}\"
+  type: vless
+  server: $(getIP)
+  port: ${getPort}
+  udp: true
+  uuid: \"${v2uuid}\"
+  flow: xtls-rprx-vision
+  packet-encoding: xudp
+  tls: true
+  servername: \"www.amazon.com\"
+  alpn:
+    - h2
+  client-fingerprint: chrome
+  skip-cert-verify: true
+  reality-opts:
+    public-key: \"${rePublicKey}\"
+    short-id: \"88\"
+  network: tcp
+  smux:
+    enabled: false
 }"
     echo
 }
