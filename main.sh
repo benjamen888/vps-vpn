@@ -15,6 +15,10 @@ unInstallHysteria2(){
     rm -rf /etc/hysteria
 }
 
+retRouting(){
+	curl https://raw.githubusercontent.com/zhanghanyun/backtrace/main/install.sh -sSf | sh
+}
+
 installReality(){
 	wget https://raw.githubusercontent.com/benjamen888/vps-vpn/main/proxytype/reality.sh && bash reality.sh 
 }
@@ -38,6 +42,9 @@ runmenu(){
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
+    echo " ------------------------------------"	
+	echo " 20. vps三网回程路线显示"
+    echo " ------------------------------------"	
     echo " 0.  退出脚本"
     echo
     read -p "请输入数字:" num
@@ -54,6 +61,9 @@ runmenu(){
     12)
     unInstallHysteria2
     ;;
+    20)
+    retRouting
+    ;;	
     0)
     exit 1
     ;;
