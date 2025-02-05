@@ -30,6 +30,36 @@ unInstallReality()
 	rm -rf /var/log/xray
 }
 
+useRSAandDisablePassword()
+{
+
+    # 定义 SSH 配置文件路径
+    SSHD_CONFIG="/etc/ssh/sshd_config"
+
+    # 备份原配置文件
+    cp $SSHD_CONFIG "${SSHD_CONFIG}.bak"
+
+    # 禁用密码登录，强制密钥登录
+    echo "禁用密码登录，强制使用密钥登录..."
+    sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' $SSHD_CONFIG
+    sed -i 's/^PasswordAuthentication yes/PasswordAuthentication no/' $SSHD_CONFIG
+    sed -i 's/^#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' $SSHD_CONFIG
+    sed -i 's/^ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' $SSHD_CONFIG
+
+    # 检查是否已经启用密钥登录
+    grep -q '^PubkeyAuthentication yes' $SSHD_CONFIG
+    if [ $? -ne 0 ]; then
+        echo "PubkeyAuthentication yes" >> $SSHD_CONFIG
+    fi
+
+    # 重新启动 SSH 服务应用更改
+    echo "重新启动 SSH 服务..."
+    systemctl restart sshd
+
+    # 提示用户更改已完成
+    echo "密码登录已禁用，仅能使用密钥登录。"
+
+}
 
 runmenu(){
     clear
@@ -39,6 +69,7 @@ runmenu(){
     echo " ================================================== "
     echo " 1. 安装 Reality"
     echo " 2. 安装 Hysteria2"
+    echo " 3. 关闭密码登陆，启用密钥登陆"
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
@@ -54,6 +85,9 @@ runmenu(){
     ;;
     2)
     installHysteria2
+    ;;
+    3)
+    useRSAandDisablePassword
     ;;
     11)
     unInstallReality
