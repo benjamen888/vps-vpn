@@ -60,7 +60,37 @@ useRSAandDisablePassword()
     echo "密码登录已禁用，仅能使用密钥登录。"
 
 }
+disableNzaSSh()
+{
+	CONFIG_FILE="/opt/nezha/agent/config.yml"
 
+	# 检查文件是否存在
+	if [ ! -f "$CONFIG_FILE" ]; then
+		echo "❌ 配置文件 $CONFIG_FILE 不存在！请检查 Nezha Agent 是否已安装。"
+		exit 1
+	fi
+
+	# 修改配置文件（如果不存在该字段，则添加）
+	if grep -q "disable_command_execute" "$CONFIG_FILE"; then
+		sed -i 's/disable_command_execute:.*/disable_command_execute: true/' "$CONFIG_FILE"
+	else
+		echo "disable_command_execute: true" >> "$CONFIG_FILE"
+	fi
+
+	echo "✅ 配置已修改：禁用远程命令执行"
+
+	# 重新加载 systemd 并重启 Nezha Agent
+	systemctl daemon-reload
+	systemctl restart nezha-agent
+
+	# 检查服务状态
+	if systemctl is-active --quiet nezha-agent; then
+		echo "✅ Nezha Agent 已成功重启并运行中！"
+	else
+		echo "❌ Nezha Agent 启动失败，请手动检查。"
+	fi
+
+}
 runmenu(){
     clear
     echo " ================================================== "
@@ -70,6 +100,7 @@ runmenu(){
     echo " 1. 安装 Reality"
     echo " 2. 安装 Hysteria2"
     echo " 3. 关闭密码登陆，启用密钥登陆"
+	echo " 4. 关闭哪吒ssh远程登录"
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
@@ -88,6 +119,9 @@ runmenu(){
     ;;
     3)
     useRSAandDisablePassword
+    ;;
+	4)
+    disableNzaSSh
     ;;
     11)
     unInstallReality
