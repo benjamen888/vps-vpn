@@ -91,6 +91,30 @@ disableNzaSSh()
 	fi
 
 }
+
+configure_network() {
+    SYSCTL_CONF="/etc/sysctl.conf"
+    sed -i '/net.core.default_qdisc/d' "$SYSCTL_CONF"
+    sed -i '/net.ipv4.tcp_congestion_control/d' "$SYSCTL_CONF"
+    sed -i '/net.ipv6.conf.all.disable_ipv6/d' "$SYSCTL_CONF"
+    sed -i '/net.ipv6.conf.default.disable_ipv6/d' "$SYSCTL_CONF"
+    sed -i '/net.ipv6.conf.lo.disable_ipv6/d' "$SYSCTL_CONF"
+    sed -i '/net.ipv4.tcp_rmem/d' "$SYSCTL_CONF"
+    sed -i '/net.ipv4.tcp_wmem/d' "$SYSCTL_CONF"
+    sed -i '/net.core.rmem_max/d' "$SYSCTL_CONF"
+    sed -i '/net.core.wmem_max/d' "$SYSCTL_CONF"
+    
+    echo -e "net.core.default_qdisc=fq\nnet.ipv4.tcp_congestion_control=bbr" >> "$SYSCTL_CONF"
+    echo -e "net.ipv6.conf.all.disable_ipv6=1\nnet.ipv6.conf.default.disable_ipv6=1\nnet.ipv6.conf.lo.disable_ipv6=1" >> "$SYSCTL_CONF"
+    echo -e "net.ipv4.tcp_rmem = 4096 2097152 4194304\nnet.ipv4.tcp_wmem = 4096 2097152 4194304" >> "$SYSCTL_CONF"
+    echo -e "net.core.rmem_max=4194304\nnet.core.wmem_max=4194304" >> "$SYSCTL_CONF"
+    
+    sysctl -p
+    echo "BBR 拥塞控制已启用，IPv6 已禁用，网络优化已应用。"
+}
+
+
+
 runmenu(){
     clear
     echo " ================================================== "
@@ -101,6 +125,7 @@ runmenu(){
     echo " 2. 安装 Hysteria2"
     echo " 3. 关闭密码登陆，启用密钥登陆"
 	echo " 4. 关闭哪吒ssh远程登录"
+	echo " 5. 关闭ipv6并且开启BBR拥塞算法"	
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
@@ -123,6 +148,9 @@ runmenu(){
 	4)
     disableNzaSSh
     ;;
+	5)
+	configure_network
+	;;
     11)
     unInstallReality
     ;;	
