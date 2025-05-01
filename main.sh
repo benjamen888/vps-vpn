@@ -131,7 +131,7 @@ runmenu(){
     echo " 3. 关闭密码登陆，启用密钥登陆"
 	echo " 4. 关闭哪吒ssh远程登录"
 	echo " 5. 关闭ipv6并且开启BBR拥塞算法"	
-    echo " 6. 安装3x-ui	
+    echo " 6. 安装3x-ui	"
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
