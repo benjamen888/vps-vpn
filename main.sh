@@ -113,7 +113,12 @@ configure_network() {
     echo "BBR 拥塞控制已启用，IPv6 已禁用，网络优化已应用。"
 }
 
+install3xui(){
+	sudo apt update
+	sudo apt install curl
+	bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
 
+}
 
 runmenu(){
     clear
@@ -126,6 +131,7 @@ runmenu(){
     echo " 3. 关闭密码登陆，启用密钥登陆"
 	echo " 4. 关闭哪吒ssh远程登录"
 	echo " 5. 关闭ipv6并且开启BBR拥塞算法"	
+    echo " 6. 安装3x-ui	
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
@@ -150,6 +156,9 @@ runmenu(){
     ;;
 	5)
 	configure_network
+	;;
+	6)
+	install3xui
 	;;
     11)
     unInstallReality
