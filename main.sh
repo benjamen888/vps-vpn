@@ -159,18 +159,55 @@ configure_swap() {
         fi
     fi
     
-    # 创建 SWAP 文件
+    # 创建 SWAP 文件 - 使用更小的块大小和块数量来避免内存耗尽
     echo "正在创建 ${SWAP_SIZE}G 的 SWAP 文件..."
-    dd if=/dev/zero of=/swapfile bs=1G count="$SWAP_SIZE" status=progress
+    # 使用小块大小创建以避免内存耗尽
+    dd if=/dev/zero of=/swapfile bs=64M count=$((SWAP_SIZE * 16)) status=progress
+    
+    # 检查 dd 命令是否成功
+    if [ $? -ne 0 ]; then
+        echo "创建 SWAP 文件失败，尝试使用备用方法..."
+        # 备用方法：使用 fallocate
+        fallocate -l ${SWAP_SIZE}G /swapfile
+        
+        if [ $? -ne 0 ]; then
+            echo "❌ SWAP 文件创建失败！请检查磁盘空间和权限。"
+            return 1
+        fi
+    fi
+    
+    # 设置权限并创建 SWAP
+    echo "设置 SWAP 文件权限..."
     chmod 600 /swapfile
+    
+    echo "格式化 SWAP 文件..."
     mkswap /swapfile
+    
+    # 检查 mkswap 是否成功
+    if [ $? -ne 0 ]; then
+        echo "❌ SWAP 文件格式化失败！"
+        rm -f /swapfile
+        return 1
+    fi
+    
+    echo "激活 SWAP..."
     swapon /swapfile
+    
+    # 检查 swapon 是否成功
+    if [ $? -ne 0 ]; then
+        echo "❌ SWAP 激活失败！"
+        rm -f /swapfile
+        return 1
+    fi
     
     # 添加到 fstab 以在重启后自动挂载
     echo "/swapfile none swap sw 0 0" >> /etc/fstab
     
     # 调整 swappiness 和 cache pressure 参数
     echo "正在优化内存管理参数..."
+    grep -q "vm.swappiness" /etc/sysctl.conf && sed -i '/vm.swappiness/d' /etc/sysctl.conf
+    grep -q "vm.vfs_cache_pressure" /etc/sysctl.conf && sed -i '/vm.vfs_cache_pressure/d' /etc/sysctl.conf
+    
     echo "vm.swappiness=10" >> /etc/sysctl.conf
     echo "vm.vfs_cache_pressure=50" >> /etc/sysctl.conf
     sysctl -p
