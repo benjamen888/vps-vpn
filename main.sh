@@ -117,7 +117,71 @@ install3xui(){
 	sudo apt update
 	sudo apt install curl
 	bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
+}
 
+# 新增功能：配置系统 SWAP
+configure_swap() {
+    # 默认 SWAP 大小为 2G
+    SWAP_SIZE="${1:-2}"
+    
+    # 检查是否为 Debian 系统
+    if [ -f /etc/debian_version ]; then
+        echo "正在为 Debian 系统配置 SWAP..."
+    else
+        echo "警告：当前不是 Debian 系统，但仍将尝试配置 SWAP。"
+    fi
+    
+    # 检查是否已存在 SWAP
+    if grep -q swap /etc/fstab; then
+        echo "系统中已存在 SWAP 配置，是否要删除并重新创建？[y/n]"
+        read -r answer
+        if [ "$answer" = "y" ]; then
+            # 关闭现有 SWAP
+            swapoff -a
+            # 从 fstab 中删除 SWAP 条目
+            sed -i '/swap/d' /etc/fstab
+            echo "已删除现有 SWAP 配置。"
+        else
+            echo "操作已取消。"
+            return 1
+        fi
+    fi
+    
+    # 检查可用磁盘空间
+    FREE_DISK=$(df -BG / | awk 'NR==2 {print $4}' | sed 's/G//')
+    if [ "$FREE_DISK" -lt "$SWAP_SIZE" ]; then
+        echo "警告：可用磁盘空间 (${FREE_DISK}G) 小于请求的 SWAP 大小 (${SWAP_SIZE}G)。"
+        echo "是否继续？[y/n]"
+        read -r answer
+        if [ "$answer" != "y" ]; then
+            echo "操作已取消。"
+            return 1
+        fi
+    fi
+    
+    # 创建 SWAP 文件
+    echo "正在创建 ${SWAP_SIZE}G 的 SWAP 文件..."
+    dd if=/dev/zero of=/swapfile bs=1G count="$SWAP_SIZE" status=progress
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    
+    # 添加到 fstab 以在重启后自动挂载
+    echo "/swapfile none swap sw 0 0" >> /etc/fstab
+    
+    # 调整 swappiness 和 cache pressure 参数
+    echo "正在优化内存管理参数..."
+    echo "vm.swappiness=10" >> /etc/sysctl.conf
+    echo "vm.vfs_cache_pressure=50" >> /etc/sysctl.conf
+    sysctl -p
+    
+    # 显示 SWAP 信息
+    echo "SWAP 配置已完成！当前 SWAP 状态："
+    free -h | grep -i swap
+    
+    echo "SWAP 配置已成功添加到系统，大小为 ${SWAP_SIZE}G。"
+    echo "按任意键返回主菜单..."
+    read -n 1
 }
 
 runmenu(){
@@ -132,6 +196,7 @@ runmenu(){
 	echo " 4. 关闭哪吒ssh远程登录"
 	echo " 5. 关闭ipv6并且开启BBR拥塞算法"	
     echo " 6. 安装3x-ui	"
+    echo " 7. 配置系统 SWAP (默认2G)"
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
@@ -160,6 +225,15 @@ runmenu(){
 	6)
 	install3xui
 	;;
+    7)
+    echo "请输入 SWAP 大小（单位：GB，默认为 2）:"
+    read -r swap_size
+    if [ -z "$swap_size" ]; then
+        configure_swap
+    else
+        configure_swap "$swap_size"
+    fi
+    ;;
     11)
     unInstallReality
     ;;	
