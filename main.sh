@@ -249,11 +249,19 @@ setLlAlias(){
     # 检查是否已存在别名设置
     if ! grep -q "alias ll='ls -l'" ~/.bashrc; then
         echo "alias ll='ls -l'" >> ~/.bashrc
-        source ~/.bashrc
-        echo "已添加 ll 别名命令"
+        echo "已添加 ll 别名命令到 ~/.bashrc"
     else
-        echo "ll 别名命令已存在"
+        echo "ll 别名命令已存在于 ~/.bashrc"
     fi
+    
+    # 使用source命令重新加载.bashrc
+    source ~/.bashrc
+    
+    # 同时在当前会话中直接设置别名
+    alias ll='ls -l'
+    
+    echo "ll 别名命令已经设置完成"
+    echo "您现在可以使用 ll 命令了"
 }
 
 runmenu(){
