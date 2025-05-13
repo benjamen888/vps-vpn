@@ -221,6 +221,30 @@ configure_swap() {
     read -n 1
 }
 
+runBestTrace(){
+    # 安装 nexttrace
+    if [ ! -f "/usr/local/bin/nexttrace" ]; then
+        curl nxtrace.org/nt | bash
+    fi
+
+    next() {
+        printf "%-70s\n" "-" | sed 's/\s/-/g'
+    }
+
+    clear
+    next
+
+    ip_list=(58.60.188.222 210.21.196.6 120.196.165.24)
+    ip_addr=(深圳电信 深圳联通 深圳移动)
+
+    for i in {0..2}
+    do
+        echo ${ip_addr[$i]}
+        nexttrace -M ${ip_list[$i]}
+        next
+    done
+}
+
 runmenu(){
     clear
     echo " ================================================== "
@@ -239,6 +263,7 @@ runmenu(){
     echo " 12. 卸载 Hysteria2"
     echo " ------------------------------------"	
 	echo " 20. vps三网回程路线显示"
+    echo " 21. 查看服务器路由追踪"
     echo " ------------------------------------"	
     echo " 0.  退出脚本"
     echo
@@ -280,6 +305,9 @@ runmenu(){
     20)
     retRouting
     ;;	
+    21)
+    runBestTrace
+    ;;
     0)
     exit 1
     ;;
