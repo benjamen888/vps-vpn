@@ -245,6 +245,17 @@ runBestTrace(){
     done
 }
 
+setLlAlias(){
+    # 检查是否已存在别名设置
+    if ! grep -q "alias ll='ls -l'" ~/.bashrc; then
+        echo "alias ll='ls -l'" >> ~/.bashrc
+        source ~/.bashrc
+        echo "已添加 ll 别名命令"
+    else
+        echo "ll 别名命令已存在"
+    fi
+}
+
 runmenu(){
     clear
     echo " ================================================== "
@@ -264,6 +275,8 @@ runmenu(){
     echo " ------------------------------------"	
 	echo " 20. vps三网回程路线显示"
     echo " 21. 查看服务器路由追踪"
+    echo " ------------------------------------"	
+    echo " 30. 添加 ll 别名命令"	
     echo " ------------------------------------"	
     echo " 0.  退出脚本"
     echo
@@ -307,6 +320,9 @@ runmenu(){
     ;;	
     21)
     runBestTrace
+    ;;
+    30)
+    setLlAlias
     ;;
     0)
     exit 1
