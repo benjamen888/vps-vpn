@@ -6,6 +6,20 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# 获取命令行参数
+# $1 作为 website 参数 (e.g. www.google.com.sg)
+WEBSITE="${1:-www.amazon.com}"
+DEST="${WEBSITE}:443"
+
+# 如果提供了参数，输出确认信息
+if [[ "$1" != "" ]]; then
+    echo "--------------------------------"
+    echo "使用自定义配置:"
+    echo "网站: $WEBSITE"
+    echo "Dest: $DEST"
+    echo "--------------------------------"
+fi
+
 v2uuid=$(cat /proc/sys/kernel/random/uuid)
 
 read -t 30 -p "回车或等待30秒为默认端口443，或者自定义端口请输入(1-65535)：" getPort
@@ -59,9 +73,10 @@ cat >/usr/local/etc/xray/config.json<<EOF
                 "security": "reality",
                 "realitySettings": {
                     "show": false,
-                    "dest": "www.amazon.com:443",
+                    "dest": "$DEST",
                     "xver": 0,
                     "serverNames": [
+                        "$WEBSITE",
                         "www.amazon.com",
                         "addons.mozilla.org",
                         "www.un.org",
@@ -106,10 +121,10 @@ UUID：${v2uuid}
 传输协议：tcp
 Public key：${rePublicKey}
 底层传输：reality
-SNI: www.amazon.com
+SNI: $WEBSITE
 shortIds: 88
 ====================================
-vless://${v2uuid}@$(getIP):${getPort}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.amazon.com&fp=chrome&pbk=${rePublicKey}&sid=88&type=tcp&headerType=none#reality-${getPort}
+vless://${v2uuid}@$(getIP):${getPort}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=$WEBSITE&fp=chrome&pbk=${rePublicKey}&sid=88&type=tcp&headerType=none#reality-${getPort}
 ====================================
 Clash 配置:
 {
@@ -122,7 +137,7 @@ Clash 配置:
   flow: xtls-rprx-vision
   packet-encoding: xudp
   tls: true
-  servername: "www.amazon.com"
+  servername: "$WEBSITE"
   alpn:
     - h2
   client-fingerprint: chrome
@@ -152,10 +167,10 @@ client_re(){
     echo "传输协议：tcp"
     echo "Public key：${rePublicKey}"
     echo "底层传输：reality"
-    echo "SNI: www.amazon.com"
+    echo "SNI: $WEBSITE"
     echo "shortIds: 88"
     echo "===================================="
-    echo "vless://${v2uuid}@$(getIP):${getPort}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.amazon.com&fp=chrome&pbk=${rePublicKey}&sid=88&type=tcp&headerType=none#reality-${getPort}"
+    echo "vless://${v2uuid}@$(getIP):${getPort}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=$WEBSITE&fp=chrome&pbk=${rePublicKey}&sid=88&type=tcp&headerType=none#reality-${getPort}"
     echo "===================================="
     echo "Clash 配置:"
     echo "{
@@ -168,7 +183,7 @@ client_re(){
   flow: xtls-rprx-vision
   packet-encoding: xudp
   tls: true
-  servername: \"www.amazon.com\"
+  servername: \"$WEBSITE\"
   alpn:
     - h2
   client-fingerprint: chrome
