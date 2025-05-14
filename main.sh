@@ -264,6 +264,14 @@ setLlAlias(){
     echo "您现在可以使用 ll 命令了"
 }
 
+checkNetworkQuality(){
+    bash <(curl -sL IP.Check.Place)
+}
+
+checkStreamingUnlock(){
+    bash <(curl -L -s media.ispvps.com)
+}
+
 runmenu(){
     clear
     echo " ================================================== "
@@ -280,6 +288,9 @@ runmenu(){
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
+    echo " ------------------------------------"	
+	echo " 13. 测试网络质量"
+    echo " 14. 测试流媒体解锁"
     echo " ------------------------------------"	
 	echo " 20. vps三网回程路线显示"
     echo " 21. 查看服务器路由追踪"
@@ -322,6 +333,12 @@ runmenu(){
     ;;	
     12)
     unInstallHysteria2
+    ;;
+    13)
+    checkNetworkQuality
+    ;;
+    14)
+    checkStreamingUnlock
     ;;
     20)
     retRouting
