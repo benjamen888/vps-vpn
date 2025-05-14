@@ -23,16 +23,16 @@ installReality(){
     # 定义可选的国家列表及其对应的网站参数
     echo "--------------------------------------------------"
     echo "请选择 Reality 配置的目标网站:"
-    echo "1. sg (新加坡 - www.google.com.sg)"
-    echo "2. hk (香港 - www.google.com.hk)"
-    echo "3. jp (日本 - www.google.co.jp)"
-    echo "4. tw (台湾 - www.google.com.tw)"
-    echo "5. us (美国 - www.google.com)"
+    echo "1. sg (新加坡 )"
+    echo "2. hk (香港 )"
+    echo "3. jp (日本 )"
+    echo "4. tw (台湾 )"
+    echo "5. us (美国 )"
     echo "请输入选项数字或国家代码 (例如: sg)。直接回车将使用默认 (sg):"
     read -r country_choice
 
     # 默认为sg
-    country="sg"
+    country="unknow"
     
     # 根据用户输入确定国家代码
     if [[ -n "$country_choice" ]]; then
@@ -42,18 +42,18 @@ installReality(){
             3|"jp") country="jp" ;;
             4|"tw") country="tw" ;;
             5|"us") country="us" ;;
-            *) echo "输入的选项 '$country_choice' 无效，将使用默认国家 (sg)。" ;;
+            *) echo "输入的选项 '$country_choice' 无效，将使用默认 (www.amazon.com)。" ;;
         esac
     fi
     
     # 根据国家代码设置网站
     case "$country" in
         "sg") website="www.ictoner.com" ;;
-        "hk") website="www.amazon.com" ;;
+        "hk") website="www.gov.hk" ;;
         "jp") website="media-server.clubmed.com" ;;
         "tw") website="www.yzu.edu.tw" ;;
         "us") website="www.amazon.com" ;;
-        *) website="www.ictoner.com" ;;
+        *) website="www.amazon.com" ;;
     esac
     
     echo "--------------------------------------------------"
