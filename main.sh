@@ -320,6 +320,12 @@ checkStreamingUnlock(){
     bash <(curl -L -s media.ispvps.com)
 }
 
+viewRealityConfig(){
+    cat /usr/local/etc/xray/reclient.json
+    echo "按任意键继续..."
+    read -n 1
+}
+
 runmenu(){
     clear
     echo " ================================================== "
@@ -336,14 +342,14 @@ runmenu(){
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
-    echo " ------------------------------------"	
-	echo " 13. 测试网络质量"
+    echo " 13. 测试网络质量"
     echo " 14. 测试流媒体解锁"
     echo " ------------------------------------"	
 	echo " 20. vps三网回程路线显示"
     echo " 21. 查看服务器路由追踪"
     echo " ------------------------------------"	
     echo " 30. 添加 ll 别名命令"	
+    echo " 31. 查看 Reality 配置"
     echo " ------------------------------------"	
     echo " 0.  退出脚本"
     echo
@@ -396,6 +402,9 @@ runmenu(){
     ;;
     30)
     setLlAlias
+    ;;
+    31)
+    viewRealityConfig
     ;;
     0)
     exit 1
