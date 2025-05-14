@@ -6,6 +6,26 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# 检查curl是否已安装，如果没有则安装
+check_and_install_curl() {
+    if ! command -v curl &> /dev/null; then
+        echo "curl未安装，开始安装..."
+        if [ -f "/usr/bin/apt-get" ]; then
+            apt-get update -y
+            apt-get install -y curl
+        else
+            yum update -y
+            yum install -y curl
+        fi
+        echo "curl已安装完成"
+    else
+        echo "curl已经安装，跳过安装步骤"
+    fi
+}
+
+# 脚本开始时检查curl
+check_and_install_curl
+
 installHysteria2(){
     wget https://raw.githubusercontent.com/benjamen888/vps-vpn/main/proxytype/hy2.sh && bash hy2.sh    
 }
