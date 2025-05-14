@@ -57,7 +57,25 @@ cat >/usr/local/etc/xray/config.json<<EOF
 {
     "inbounds": [
         {
+            "tag": "dokodemo-in",
             "port": $getPort,
+            "protocol": "dokodemo-door",
+            "settings": {
+                "address": "127.0.0.1",
+                "port": 58890,
+                "network": "tcp"
+            },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "tls"
+                ],
+                "routeOnly": true
+            }
+        },
+        {
+            "listen": "127.0.0.1",
+            "port": 58890,
             "protocol": "vless",
             "settings": {
                 "clients": [
@@ -72,25 +90,24 @@ cat >/usr/local/etc/xray/config.json<<EOF
                 "network": "tcp",
                 "security": "reality",
                 "realitySettings": {
-                    "show": false,
                     "dest": "$DEST",
-                    "xver": 0,
                     "serverNames": [
-                        "$WEBSITE",
-                        "www.amazon.com",
-                        "addons.mozilla.org",
-                        "www.un.org",
-                        "www.tesla.com"
+                        "$WEBSITE"
                     ],
                     "privateKey": "$rePrivateKey",
-                    "minClientVer": "",
-                    "maxClientVer": "",
-                    "maxTimeDiff": 0,
                     "shortIds": [
-                        "88",
-                        "123abc"
+                        "88"
                     ]
                 }
+            },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls",
+                    "quic"
+                ],
+                "routeOnly": true
             }
         }
     ],
@@ -101,9 +118,28 @@ cat >/usr/local/etc/xray/config.json<<EOF
         },
         {
             "protocol": "blackhole",
-            "tag": "blocked"
+            "tag": "block"
         }
-    ]
+    ],
+    "routing": {
+        "rules": [
+            {
+                "inboundTag": [
+                    "dokodemo-in"
+                ],
+                "domain": [
+                    "$WEBSITE"
+                ],
+                "outboundTag": "direct"
+            },
+            {
+                "inboundTag": [
+                    "dokodemo-in"
+                ],
+                "outboundTag": "block"
+            }
+        ]
+    }
 }
 EOF
 
