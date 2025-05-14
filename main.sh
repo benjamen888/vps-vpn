@@ -322,8 +322,9 @@ checkStreamingUnlock(){
 
 viewRealityConfig(){
     cat /usr/local/etc/xray/reclient.json
-    echo "按任意键继续..."
+    echo "按任意键返回主菜单..."
     read -n 1
+    runmenu
 }
 
 runmenu(){
