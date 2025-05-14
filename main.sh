@@ -28,7 +28,7 @@ installReality(){
     echo "3. jp (日本 )"
     echo "4. tw (台湾 )"
     echo "5. us (美国 )"
-    echo "请输入选项数字或国家代码 (例如: sg)。直接回车将使用默认 (sg):"
+    echo -n "请输入选项数字或国家代码 (例如: sg)。直接回车将使用默认 (sg):"
     read -r country_choice
 
     # 默认为sg
@@ -52,7 +52,7 @@ installReality(){
         "hk") website="www.gov.hk" ;;
         "jp") website="media-server.clubmed.com" ;;
         "tw") website="www.yzu.edu.tw" ;;
-        "us") website="www.amazon.com" ;;
+        "us") website="www.ucdavis.edu" ;;
         *) website="www.amazon.com" ;;
     esac
     
