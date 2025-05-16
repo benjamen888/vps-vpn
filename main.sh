@@ -68,7 +68,7 @@ installReality(){
     
     # 根据国家代码设置网站
     case "$country" in
-        "sg") website="www.ictoner.com" ;;
+        "sg") website="www.stb.gov.sg" ;;
         "hk") website="www.gov.hk" ;;
         "jp") website="media-server.clubmed.com" ;;
         "tw") website="www.yzu.edu.tw" ;;
