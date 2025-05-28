@@ -347,6 +347,56 @@ viewRealityConfig(){
     runmenu
 }
 
+installNextTrace(){
+    echo "🧠 正在检测系统架构..."
+    ARCH=$(uname -m)
+
+    if [[ "$ARCH" == "x86_64" ]]; then
+        TARGET="linux_amd64"
+    elif [[ "$ARCH" == "aarch64" ]]; then
+        TARGET="aarch64-unknown-linux-gnu"
+    else
+        echo "❌ 不支持的架构: $ARCH"
+        return 1
+    fi
+
+    echo "📡 正在获取最新版本..."
+    LATEST_VERSION=$(wget -qO- https://api.github.com/repos/nxtrace/NTrace-core/releases | grep -m 1 '"tag_name":' | cut -d '"' -f 4)
+
+    if [ -z "$LATEST_VERSION" ]; then
+        echo "❌ 无法获取最新版本号，请检查网络连接或 GitHub API 限制"
+        return 1
+    fi
+
+    echo "📦 最新版本: $LATEST_VERSION"
+    ZIP_NAME="nexttrace_${TARGET}"
+    DOWNLOAD_URL="https://github.com/nxtrace/Ntrace-core/releases/download/${LATEST_VERSION}/${ZIP_NAME}"
+
+    echo "🌐 下载链接: $DOWNLOAD_URL"
+
+    TMP_DIR="/tmp/nexttrace_install"
+    mkdir -p "$TMP_DIR"
+    cd "$TMP_DIR"
+
+    echo "📥 正在下载..."
+    wget -q --show-progress "$DOWNLOAD_URL" -O "$ZIP_NAME" || { echo "❌ 下载失败，请确认该版本支持你的架构"; return 1; }
+
+    echo "🚀 安装 nexttrace 到 /usr/local/bin/..."
+    mv -f $ZIP_NAME /usr/local/bin/nexttrace
+    chmod +x /usr/local/bin/nexttrace
+
+    echo "🧹 清理..."
+    cd ~
+    rm -rf "$TMP_DIR"
+
+    echo "✅ 安装成功！版本如下："
+    nexttrace -v
+    
+    echo "按任意键返回主菜单..."
+    read -n 1
+    runmenu
+}
+
 runmenu(){
     clear
     echo " ================================================== "
@@ -371,6 +421,7 @@ runmenu(){
     echo " ------------------------------------"	
     echo " 30. 添加 ll 别名命令"	
     echo " 31. 查看 Reality 配置"
+    echo " 32. 安装 NextTrace 路由追踪工具"
     echo " ------------------------------------"	
     echo " 0.  退出脚本"
     echo
@@ -426,6 +477,9 @@ runmenu(){
     ;;
     31)
     viewRealityConfig
+    ;;
+    32)
+    installNextTrace
     ;;
     0)
     exit 1
