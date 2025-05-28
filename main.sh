@@ -71,7 +71,7 @@ installReality(){
         "sg") website="www.stb.gov.sg" ;;
         "hk") website="www.gov.hk" ;;
         "jp") website="media-server.clubmed.com" ;;
-        "tw") website="www.yzu.edu.tw" ;;
+        "tw") website="tw.trip.com" ;;
         "us") website="www.ucdavis.edu" ;;
         *) website="www.amazon.com" ;;
     esac
