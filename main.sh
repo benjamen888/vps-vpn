@@ -289,6 +289,13 @@ configure_swap() {
     read -n 1
 }
 
+installShadowsocks(){
+    wget https://raw.githubusercontent.com/benjamen888/vps-vpn/main/proxytype/ss-rust.sh && bash ss-rust.sh
+    echo "按任意键返回主菜单..."
+    read -n 1
+    runmenu
+}
+
 runBestTrace(){
     # 安装 nexttrace
     if [ ! -f "/usr/local/bin/nexttrace" ]; then
@@ -410,6 +417,7 @@ runmenu(){
 	echo " 5. 关闭ipv6并且开启BBR拥塞算法"	
     echo " 6. 安装3x-ui	"
     echo " 7. 配置系统 SWAP (默认2G)"
+    echo " 8. 安装 Shadowsocks"
     echo " ------------------------------------"
     echo " 11. 卸载 Reality"
     echo " 12. 卸载 Hysteria2"
@@ -453,6 +461,9 @@ runmenu(){
     else
         configure_swap "$swap_size"
     fi
+    ;;
+    8)
+    installShadowsocks
     ;;
     11)
     unInstallReality
