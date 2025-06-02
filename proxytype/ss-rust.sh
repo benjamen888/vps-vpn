@@ -123,7 +123,7 @@ client_SS(){
     echo "===================================="
     echo "Clash 配置:"
     echo "{
-- name: \"ss-${getPort}\"
+- name: \"ss-${ssport}\"
   type: ss 
   server: $(getIP)
   port: ${getPort}
