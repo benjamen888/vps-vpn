@@ -126,7 +126,7 @@ client_SS(){
 - name: \"ss-${ssport}\"
   type: ss 
   server: $(getIP)
-  port: ${getPort}
+  port: ${ssport}
   cipher: aes-128-gcm
   password: \"${sspasswd}\"  # 如果需要认证
   udp: true
