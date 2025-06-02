@@ -120,6 +120,19 @@ client_SS(){
     echo "传输协议：tcp+udp"
     echo "========================================="
     echo "ss://${sslink}"
+    echo "===================================="
+    echo "Clash 配置:"
+    echo "{
+- name: \"ss-${getPort}\"
+  type: ss 
+  server: $(getIP)
+  port: ${getPort}
+  cipher: aes-128-gcm
+  password: \"${sspasswd}\"  # 如果需要认证
+  udp: true
+  timeout: 600
+  mode: \"tcp_and_udp\"
+}"
     echo
 }
 
